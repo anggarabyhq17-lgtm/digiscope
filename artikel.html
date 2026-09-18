@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Artikel - Digiscope</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#080C14',     
+                        cardBg: '#111827',     
+                        accent: {
+                            DEFAULT: '#FF5722', 
+                            hover: '#FF7043'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Plus Jakarta Sans', sans-serif; } 
+        /* Styling tambahan untuk konten artikel agar spasi paragraf rapi */
+        .article-content p { margin-bottom: 1.5rem; line-height: 1.8; color: #9CA3AF; }
+        .article-content h2 { font-size: 1.5rem; font-weight: 700; color: #FFFFFF; margin-top: 2rem; margin-bottom: 1rem; }
+        .article-content h3 { font-size: 1.25rem; font-weight: 600; color: #FFFFFF; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .article-content ul, .article-content ol { margin-left: 1.5rem; margin-bottom: 1.25rem; color: #9CA3AF; }
+        .article-content ul { list-style-type: disc; }
+        .article-content ol { list-style-type: decimal; }
+        .article-content blockquote { border-left: 4px solid #FF5722; padding-left: 1rem; margin: 1.5rem 0; font-style: italic; color: #D1D5DB; }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-200 antialiased selection:bg-accent selection:text-white">
+
+    <!-- NAVBAR -->
+    <header class="border-b border-gray-800 sticky top-0 bg-darkBg/95 backdrop-blur-md z-50">
+        <div class="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-2 text-gray-400 hover:text-white transition text-xs font-bold">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <span>Kembali ke Beranda</span>
+            </a>
+            <a href="index.html" class="text-xl font-extrabold tracking-tight text-white">Digi<span class="text-accent">scope</span>.</a>
+        </div>
+    </header>
+
+    <!-- KONTEN ARTIKEL UTAMA -->
+    <main class="max-w-4xl mx-auto px-6 py-10">
+        <article id="articleContainer">
+            <!-- Data artikel akan dimuat otomatis oleh JavaScript -->
+        </article>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="max-w-4xl mx-auto px-6 py-8 text-center text-gray-600 text-xs border-t border-gray-800 mt-20">
+        <p>&copy; 2026 Digiscope. Dark & Modern Publishing.</p>
+    </footer>
+
+    <!-- SCRIPT DETAIL ARTIKEL -->
+    <script>
+        const articleContainer = document.getElementById('articleContainer');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get('id');
+
+        let daftarArtikel = JSON.parse(localStorage.getItem('artikelDigiscope')) || [];
+
+        if (articleId !== null && daftarArtikel[articleId]) {
+            const artikel = daftarArtikel[articleId];
+
+            document.title = `${artikel.judul} - Digiscope`;
+
+            // SOLUSI TEKS MENGGABUNG: Jika teks belum berformat <p>, ubah baris baru menjadi tag <p>
+            let formatIsi = artikel.isi;
+            if (!formatIsi.includes('<p>')) {
+                formatIsi = formatIsi.split('\n').map(paragraf => paragraf.trim() ? `<p>${paragraf}</p>` : '').join('');
+            }
+
+            articleContainer.innerHTML = `
+                <!-- Kategori & Tanggal -->
+                <div class="flex items-center space-x-3 mb-4">
+                    <span class="bg-accent/10 text-accent border border-accent/20 text-xs font-bold px-3 py-1 rounded-lg uppercase tracking-wider">${artikel.kategori}</span>
+                    <span class="text-xs text-gray-500">•</span>
+                    <span class="text-xs text-gray-400">${artikel.tanggal}</span>
+                    <span class="text-xs text-gray-500">•</span>
+                    <span class="text-xs text-gray-400">Oleh: <strong class="text-white">${artikel.penulis || 'Admin'}</strong></span>
+                </div>
+
+                <!-- Judul Artikel -->
+                <h1 class="text-2xl md:text-4xl font-extrabold text-white mb-6 leading-tight">
+                    ${artikel.judul}
+                </h1>
+
+                <!-- Gambar Utama -->
+                <div class="h-64 md:h-96 rounded-2xl overflow-hidden mb-8 border border-gray-800">
+                    <img src="${artikel.gambar || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80'}" alt="Gambar Artikel" class="w-full h-full object-cover">
+                </div>
+
+                <!-- Isi Artikel -->
+                <div class="article-content text-sm md:text-base mb-12">
+                    ${formatIsi}
+                </div>
+
+                <!-- BAGIAN FITUR SHARE -->
+                <div class="bg-cardBg border border-gray-800 rounded-2xl p-6 mt-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-white mb-1">Suka dengan artikel ini?</h3>
+                        <p class="text-xs text-gray-400">Bagikan informasi menarik ini kepada rekan atau media sosial Anda.</p>
+                    </div>
+                    <div class="flex items-center flex-wrap gap-2 w-full sm:w-auto justify-end">
+                        <a id="shareWa" href="#" target="_blank" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center space-x-1.5">
+                            <span>WhatsApp</span>
+                        </a>
+                        <a id="shareTwitter" href="#" target="_blank" class="bg-blue-500/20 hover:bg-blue-500 text-blue-400 hover:text-white border border-blue-500/30 text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center space-x-1.5">
+                            <span>Twitter/X</span>
+                        </a>
+                        <button onclick="salinTautan()" class="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 text-xs font-bold px-3.5 py-2 rounded-xl transition cursor-pointer flex items-center space-x-1.5">
+                            <span id="copyText">Salin Link</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            const currentUrl = window.location.href;
+            const encodedTitle = encodeURIComponent(artikel.judul);
+            const encodedUrl = encodeURIComponent(currentUrl);
+
+            document.getElementById('shareWa').href = `https://api.whatsapp.com/send?text=${encodedTitle}%20-%20${encodedUrl}`;
+            document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`;
+
+        } else {
+            articleContainer.innerHTML = `
+                <div class="text-center py-20">
+                    <h2 class="text-xl font-bold text-white mb-2">Artikel Tidak Ditemukan</h2>
+                    <p class="text-gray-400 text-xs mb-6">Artikel yang Anda cari mungkin telah dihapus atau tautan tidak valid.</p>
+                    <a href="index.html" class="bg-accent text-white font-bold text-xs px-5 py-2.5 rounded-xl">Kembali ke Beranda</a>
+                </div>
+            `;
+        }
+
+        function salinTautan() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const copyTextSpan = document.getElementById('copyText');
+                copyTextSpan.innerText = "Berhasil Disalin!";
+                setTimeout(() => {
+                    copyTextSpan.innerText = "Salin Link";
+                }, 2000);
+            }).catch(err => {
+                alert('Gagal menyalin tautan.');
+            });
+        }
+    </script>
+</body>
+</html>

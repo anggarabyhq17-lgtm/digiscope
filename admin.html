@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Digiscope</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#080C14',    
+                        cardBg: '#111827',    
+                        sidebarBg: '#0D1322',
+                        borderDark: '#1F293D',
+                        accent: {
+                            DEFAULT: '#FF5722', 
+                            hover: '#FF7043'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-200 antialiased flex h-screen overflow-hidden selection:bg-accent selection:text-white">
+
+    <!-- OVERLAY GELAP UNTUK HP KETIKA SIDEBAR TERBUKA -->
+    <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden transition-opacity"></div>
+
+    <!-- SIDEBAR KIRI (RESPONSIVE: GESER DI HP, STATIS DI DESKTOP) -->
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 w-64 bg-sidebarBg text-gray-300 flex flex-col justify-between select-none shrink-0 border-r border-borderDark shadow-xl z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+        <div>
+            <!-- Header Logo Sidebar & Tombol Close HP -->
+            <div class="h-16 flex items-center justify-between px-6 bg-cardBg/50 text-white font-extrabold text-base tracking-tight border-b border-borderDark">
+                <div>Digi<span class="text-accent">scope</span> <span class="ml-1 text-[10px] bg-accent/20 text-accent px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">Admin</span></div>
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Menu Utama Sidebar -->
+            <nav class="p-3 space-y-1 text-xs font-semibold">
+                <a href="#" onclick="gantiTab('dashboard'); toggleSidebarOnMobile();" id="menu-dashboard" class="flex items-center px-4 py-3 text-white bg-accent rounded-xl shadow-lg shadow-accent/20 transition group">
+                    <svg class="w-4 h-4 mr-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Home / Dashboard
+                </a>
+                <a href="#" onclick="gantiTab('posts'); toggleSidebarOnMobile();" id="menu-posts" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-cardBg rounded-xl transition group">
+                    <svg class="w-4 h-4 mr-3 text-gray-500 group-hover:text-accent transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+                    Posts (Artikel)
+                </a>
+                <a href="#" onclick="gantiTab('tambah'); toggleSidebarOnMobile();" id="menu-tambah" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-cardBg rounded-xl transition group">
+                    <svg class="w-4 h-4 mr-3 text-gray-500 group-hover:text-accent transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    + Buat Post Baru
+                </a>
+                <a href="index.html" target="_blank" class="flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-cardBg rounded-xl transition group">
+                    <svg class="w-4 h-4 mr-3 text-gray-500 group-hover:text-accent transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    Lihat Web ↗
+                </a>
+            </nav>
+        </div>
+
+        <!-- Footer Sidebar dengan Tombol Logout -->
+        <div class="p-4 border-t border-borderDark flex flex-col space-y-3">
+            <div class="text-[11px] text-gray-400 flex items-center justify-between">
+                <span>Digiscope CMS</span>
+                <span class="text-accent font-bold">v1.5</span>
+            </div>
+            <button onclick="logoutAdmin()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-2 cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <span>Keluar (Logout)</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- AREA KONTEN UTAMA -->
+    <main class="flex-1 flex flex-col h-screen overflow-y-auto bg-darkBg">
+        
+        <!-- Top Bar Admin -->
+        <header class="h-16 bg-cardBg/80 backdrop-blur-md border-b border-borderDark px-4 sm:px-8 flex items-center justify-between shrink-0 sticky top-0 z-30">
+            <div class="flex items-center space-x-3">
+                <!-- Tombol Hamburger khusus HP -->
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-300 hover:text-white p-2 rounded-xl bg-darkBg border border-borderDark focus:outline-none">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <h1 id="pageTitle" class="text-sm sm:text-base font-extrabold text-white tracking-wide">Dashboard</h1>
+            </div>
+            <div class="flex items-center space-x-2 text-xs">
+                <span class="text-gray-400 hidden sm:inline">Masuk sebagai:</span> 
+                <strong id="adminUsernameDisplay" class="text-accent bg-darkBg border border-borderDark px-3 py-1.5 rounded-lg">Administrator</strong>
+            </div>
+        </header>
+
+        <!-- Container Isi Tab -->
+        <div class="p-4 sm:p-8 max-w-6xl w-full mx-auto space-y-6">
+
+            <!-- TAB 1: DASHBOARD WELCOME -->
+            <div id="tab-dashboard" class="tab-content space-y-6">
+                <div class="bg-gradient-to-r from-accent/20 via-cardBg to-cardBg border border-accent/30 text-white p-6 sm:p-8 rounded-2xl shadow-xl relative overflow-hidden flex flex-col justify-center min-h-[150px]">
+                    <h2 class="text-xl sm:text-2xl font-black mb-2 tracking-tight">Selamat Datang Kembali, Admin!</h2>
+                    <p class="text-gray-400 text-xs sm:text-sm max-w-xl">Kelola artikel berita, publikasikan informasi terkini, dan pantau konten langsung dari panel kontrol responsif Digiscope.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-cardBg p-6 rounded-2xl border border-borderDark shadow-xl space-y-4">
+                        <h3 class="font-bold text-sm text-white border-b border-borderDark pb-3">Site Health Status</h3>
+                        <div class="flex items-center space-x-4 py-2">
+                            <div class="w-10 h-10 shrink-0 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-lg border border-emerald-500/20">&#10003;</div>
+                            <div>
+                                <h4 class="font-bold text-xs text-white">Sesi Aman & Responsif</h4>
+                                <p class="text-gray-400 text-xs">Tampilan panel otomatis menyesuaikan perangkat seluler.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-cardBg p-6 rounded-2xl border border-borderDark shadow-xl space-y-4">
+                        <h3 class="font-bold text-sm text-white border-b border-borderDark pb-3">Statistik Konten</h3>
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div class="bg-darkBg p-4 rounded-xl border border-borderDark">
+                                <span id="statTotalArtikel" class="text-2xl font-extrabold text-accent">0</span>
+                                <p class="text-xs text-gray-400 mt-1">Total Artikel</p>
+                            </div>
+                            <div class="bg-darkBg p-4 rounded-xl border border-borderDark">
+                                <span class="text-2xl font-extrabold text-emerald-400">Aktif</span>
+                                <p class="text-xs text-gray-400 mt-1">Status Publikasi</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: DAFTAR POST -->
+            <div id="tab-posts" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-extrabold text-white">Daftar Artikel</h2>
+                        <p class="text-gray-400 text-xs">Kelola semua artikel berita yang telah diterbitkan.</p>
+                    </div>
+                    <button onclick="gantiTab('tambah')" class="bg-accent hover:bg-accent-hover text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-lg shadow-accent/20 cursor-pointer self-start sm:self-auto">
+                        + Tambah Baru
+                    </button>
+                </div>
+
+                <div class="bg-cardBg rounded-2xl border border-borderDark shadow-xl overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs min-w-[600px]">
+                            <thead>
+                                <tr class="bg-darkBg/60 border-b border-borderDark text-gray-400 font-bold">
+                                    <th class="p-4">Thumbnail</th>
+                                    <th class="p-4">Judul Artikel</th>
+                                    <th class="p-4">Kategori</th>
+                                    <th class="p-4">Penulis</th>
+                                    <th class="p-4">Tanggal</th>
+                                    <th class="p-4 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelArtikelBody" class="divide-y divide-borderDark/60"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: FORM TAMBAH / EDIT -->
+            <div id="tab-tambah" class="tab-content hidden space-y-6">
+                <div>
+                    <h2 id="formHeaderTitle" class="text-lg sm:text-xl font-extrabold text-white">Buat Post Baru</h2>
+                    <p class="text-gray-400 text-xs">Tulis berita atau artikel terbaru untuk pembaca Digiscope.</p>
+                </div>
+
+                <form id="formArtikel" onsubmit="simpanArtikel(event)" class="bg-cardBg p-6 rounded-2xl border border-borderDark shadow-xl space-y-4">
+                    <input type="hidden" id="editIndex" value="">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-1">Judul Artikel</label>
+                        <input type="text" id="inputJudul" required placeholder="Masukkan judul artikel..." class="w-full bg-darkBg border border-borderDark rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 mb-1">Kategori</label>
+                            <select id="inputKategori" class="w-full bg-darkBg border border-borderDark rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-accent">
+                                <option value="News">News</option>
+                                <option value="Daerah">Daerah</option>
+                                <option value="Tech">Tech</option>
+                                <option value="Business">Business</option>
+                                <option value="Sport">Sport</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Lifestyle">Lifestyle</option>
+                                <option value="Culture">Culture</option>
+                                <option value="Travel">Travel</option>
+                                <option value="Otomotif">Otomotif</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 mb-1">Penulis</label>
+                            <input type="text" id="inputPenulis" value="Admin" placeholder="Nama Penulis" class="w-full bg-darkBg border border-borderDark rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-accent">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-1">Gambar Thumbnail Artikel</label>
+                        <input type="file" id="inputGambarFile" accept="image/*" class="w-full bg-darkBg border border-borderDark rounded-xl px-4 py-2 text-xs text-gray-300 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-accent file:text-white hover:file:bg-accent-hover cursor-pointer focus:outline-none">
+                        <input type="hidden" id="inputGambarBase64" value="">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-1">Isi Artikel</label>
+                        <!-- Toolbar Format Teks Ditambahkan di Sini -->
+                        <div class="flex flex-wrap items-center gap-1.5 bg-darkBg border border-borderDark border-b-0 rounded-t-xl p-2 text-gray-300 text-xs">
+                            <button type="button" onclick="formatTeks('bold')" class="px-2.5 py-1.5 bg-cardBg hover:bg-borderDark rounded font-bold transition" title="Tebal (Bold)">B</button>
+                            <button type="button" onclick="formatTeks('italic')" class="px-2.5 py-1.5 bg-cardBg hover:bg-borderDark rounded italic transition" title="Miring (Italic)">I</button>
+                            <button type="button" onclick="formatTeks('underline')" class="px-2.5 py-1.5 bg-cardBg hover:bg-borderDark rounded underline transition" title="Garis Bawah (Underline)">U</button>
+                            <span class="w-px h-4 bg-borderDark mx-1"></span>
+                            <button type="button" onclick="formatTeks('h2')" class="px-2.5 py-1.5 bg-cardBg hover:bg-borderDark rounded font-bold transition" title="Subjudul (H2)">H2</button>
+                            <button type="button" onclick="formatTeks('h3')" class="px-2.5 py-1.5 bg-cardBg hover:bg-borderDark rounded font-bold transition" title="Subjudul (H3)">H3</button>
+                            <span class="w-px h-4 bg-borderDark mx-1"></span>
+                            <button type="button" onclick="formatTeks('ul')" class="px-2.5 py-1.5 bg-cardBg hover:bg-borderDark rounded transition" title="Bullet List">• List</button>
+                        </div>
+                        <textarea id="inputIsi" rows="8" required placeholder="Tulis isi berita secara lengkap di sini..." class="w-full bg-darkBg border border-borderDark rounded-b-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent"></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-end space-x-3 pt-2">
+                        <button type="button" onclick="gantiTab('posts')" class="bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-bold px-4 py-2.5 rounded-xl transition cursor-pointer">Batal</button>
+                        <button type="submit" class="bg-accent hover:bg-accent-hover text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-lg shadow-accent/20 cursor-pointer">Publikasikan Artikel</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- SCRIPT OTENTIKASI & LOGIKA RESPONSIVE -->
+    <script>
+        // 1. CEK KEAMANAN SESI LOGIN
+        if (localStorage.getItem('digiscopeLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        } else {
+            const savedUser = localStorage.getItem('digiscopeUser') || 'Admin';
+            document.getElementById('adminUsernameDisplay').innerText = savedUser;
+        }
+
+        function logoutAdmin() {
+            if (confirm("Apakah Anda ingin keluar dari sesi admin?")) {
+                localStorage.removeItem('digiscopeLoggedIn');
+                localStorage.removeItem('digiscopeUser');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Fungsi Buka/Tutup Sidebar di HP
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function toggleSidebarOnMobile() {
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
+        }
+
+        let daftarArtikel = JSON.parse(localStorage.getItem('artikelDigiscope')) || [];
+
+        function gantiTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+
+            ['dashboard', 'posts', 'tambah'].forEach(menu => {
+                const el = document.getElementById('menu-' + menu);
+                if(el) {
+                    el.className = "flex items-center px-4 py-3 text-gray-400 hover:text-white hover:bg-cardBg rounded-xl transition group";
+                }
+            });
+            const aktifMenu = document.getElementById('menu-' + tabName);
+            if(aktifMenu) {
+                aktifMenu.className = "flex items-center px-4 py-3 text-white bg-accent rounded-xl shadow-lg shadow-accent/20 transition group";
+            }
+
+            const titleMap = {
+                'dashboard': 'Dashboard',
+                'posts': 'Kelola Posts',
+                'tambah': 'Buat Post Baru'
+            };
+            document.getElementById('pageTitle').innerText = titleMap[tabName] || 'Admin';
+
+            if(tabName === 'posts') renderTabelArtikel();
+            if(tabName === 'dashboard') muatStatistik();
+            if(tabName === 'tambah') {
+                document.getElementById('formArtikel').reset();
+                document.getElementById('editIndex').value = '';
+                document.getElementById('inputGambarBase64').value = '';
+                document.getElementById('formHeaderTitle').innerText = 'Buat Post Baru';
+            }
+        }
+
+        function muatStatistik() {
+            document.getElementById('statTotalArtikel').innerText = daftarArtikel.length;
+        }
+
+        function renderTabelArtikel() {
+            const tbody = document.getElementById('tabelArtikelBody');
+            tbody.innerHTML = '';
+
+            if (daftarArtikel.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-gray-500">Belum ada artikel yang dipublikasikan.</td></tr>`;
+                return;
+            }
+
+            daftarArtikel.slice().reverse().forEach((artikel, idxTerbalik) => {
+                const actualIndex = daftarArtikel.length - 1 - idxTerbalik;
+                let tr = document.createElement('tr');
+                tr.className = "hover:bg-darkBg/50 transition";
+                
+                let imgThumb = artikel.gambar ? `<img src="${artikel.gambar}" class="w-12 h-10 object-cover rounded-lg border border-borderDark">` : `<div class="w-12 h-10 bg-darkBg border border-borderDark rounded-lg flex items-center justify-center text-[10px] text-gray-500">No Img</div>`;
+
+                tr.innerHTML = `
+                    <td class="p-4">${imgThumb}</td>
+                    <td class="p-4 font-bold text-white max-w-xs truncate">${artikel.judul}</td>
+                    <td class="p-4"><span class="bg-accent/10 text-accent px-2.5 py-1 rounded-md text-[10px] font-bold border border-accent/20">${artikel.kategori}</span></td>
+                    <td class="p-4 text-gray-400">${artikel.penulis || 'Admin'}</td>
+                    <td class="p-4 text-gray-500">${artikel.tanggal}</td>
+                    <td class="p-4 text-right space-x-3">
+                        <button onclick="editArtikel(${actualIndex})" class="text-accent hover:underline font-bold cursor-pointer">Edit</button>
+                        <button onclick="hapusArtikel(${actualIndex})" class="text-red-400 hover:underline font-bold cursor-pointer">Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Fungsi Tombol Format Teks (Toolbar)
+        function formatTeks(tag) {
+            const textarea = document.getElementById('inputIsi');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const teksPilih = textarea.value.substring(start, end);
+            let teksBaru = '';
+
+            if (tag === 'bold') {
+                teksBaru = `<strong>${teksPilih}</strong>`;
+            } else if (tag === 'italic') {
+                teksBaru = `<em>${teksPilih}</em>`;
+            } else if (tag === 'underline') {
+                teksBaru = `<u>${teksPilih}</u>`;
+            } else if (tag === 'h2') {
+                teksBaru = `<h2>${teksPilih}</h2>`;
+            } else if (tag === 'h3') {
+                teksBaru = `<h3>${teksPilih}</h3>`;
+            } else if (tag === 'ul') {
+                teksBaru = `<ul>\n  <li>${teksPilih}</li>\n</ul>`;
+            }
+
+            textarea.value = textarea.value.substring(0, start) + teksBaru + textarea.value.substring(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + teksBaru.length, start + teksBaru.length);
+        }
+
+        function simpanArtikel(event) {
+            event.preventDefault();
+            const editIndex = document.getElementById('editIndex').value;
+            const judul = document.getElementById('inputJudul').value;
+            const kategori = document.getElementById('inputKategori').value;
+            const penulis = document.getElementById('inputPenulis').value;
+            const isi = document.getElementById('inputIsi').value;
+            const tanggal = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+            
+            let gambarBase64 = document.getElementById('inputGambarBase64').value;
+            const fileInput = document.getElementById('inputGambarFile');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    gambarBase64 = e.target.result;
+                    simpanKeStorage(judul, kategori, penulis, gambarBase64, isi, tanggal, editIndex);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                simpanKeStorage(judul, kategori, penulis, gambarBase64, isi, tanggal, editIndex);
+            }
+        }
+
+        function simpanKeStorage(judul, kategori, penulis, gambar, isi, tanggal, editIndex) {
+    // Jika menggunakan database, untuk sementara kita arahkan proses simpan sebagai penambahan data baru
+    const formData = new URLSearchParams();
+    formData.append('judul', judul);
+    formData.append('kategori', kategori);
+    formData.append('penulis', penulis);
+    formData.append('gambar', gambar);
+    formData.append('isi', isi);
+
+    fetch('simpan-artikel.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData.toString()
+    })
+    .then(response => response.json())
+    .then(result => {
+        if(result.status === 'success') {
+            alert('Artikel berhasil dipublikasikan ke Database!');
+            location.reload(); // Refresh halaman untuk memuat data terbaru dari database
+        } else {
+            alert('Gagal menyimpan: ' + result.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan koneksi ke server.');
+    });
+}
+
+        function editArtikel(index) {
+            const artikel = daftarArtikel[index];
+            gantiTab('tambah');
+            document.getElementById('formHeaderTitle').innerText = 'Edit Artikel';
+            document.getElementById('editIndex').value = index;
+            document.getElementById('inputJudul').value = artikel.judul;
+            document.getElementById('inputKategori').value = artikel.kategori;
+            document.getElementById('inputPenulis').value = artikel.penulis || 'Admin';
+            document.getElementById('inputGambarBase64').value = artikel.gambar || '';
+            document.getElementById('inputIsi').value = artikel.isi;
+        }
+
+        function hapusArtikel(index) {
+            if (confirm("Apakah Anda yakin ingin menghapus artikel ini?")) {
+                daftarArtikel.splice(index, 1);
+                localStorage.setItem('artikelDigiscope', JSON.stringify(daftarArtikel));
+                renderTabelArtikel();
+                muatStatistik();
+            }
+        }
+
+        muatStatistik();
+    </script>
+</body>
+</html>
