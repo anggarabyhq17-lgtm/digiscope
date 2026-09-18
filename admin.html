@@ -268,7 +268,22 @@
             }
         }
 
-        let daftarArtikel = JSON.parse(localStorage.getItem('artikelDigiscope')) || [];
+        let daftarArtikel = [];
+
+        // Ambil data langsung dari database melalui file PHP saat halaman admin dimuat
+        fetch('ambil-data.php')
+            .then(response => response.json())
+            .then(data => {
+                daftarArtikel = data;
+                muatStatistik(); // Update statistik jumlah artikel setelah data ditarik
+                // Jika saat halaman dibuka posisi tab-nya sedang di posts, langsung render tabelnya
+                if (!document.getElementById('tab-posts').classList.contains('hidden')) {
+                    renderTabelArtikel();
+                }
+            })
+            .catch(error => {
+                console.error('Gagal mengambil data dari database:', error);
+            });
 
         function gantiTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
