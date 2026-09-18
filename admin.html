@@ -432,11 +432,30 @@
         }
 
         function hapusArtikel(index) {
-            if (confirm("Apakah Anda yakin ingin menghapus artikel ini?")) {
-                daftarArtikel.splice(index, 1);
-                localStorage.setItem('artikelDigiscope', JSON.stringify(daftarArtikel));
-                renderTabelArtikel();
-                muatStatistik();
+            const artikel = daftarArtikel[index];
+            
+            // Pastikan artikel memiliki ID database
+            if (!artikel || !artikel.id) {
+                alert('ID artikel tidak ditemukan!');
+                return;
+            }
+
+            if (confirm("Apakah Anda yakin ingin menghapus artikel ini dari Database?")) {
+                // Kirim permintaan hapus ke backend PHP
+                fetch(`hapus-artikel.php?id=${artikel.id}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status === 'success') {
+                            alert('Artikel berhasil dihapus dari database!');
+                            location.reload(); // Muat ulang halaman untuk memperbarui data
+                        } else {
+                            alert('Gagal menghapus: ' + result.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan koneksi ke server.');
+                    });
             }
         }
 
