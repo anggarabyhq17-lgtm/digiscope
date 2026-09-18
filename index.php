@@ -149,59 +149,58 @@ fetch('ambil-data.php')
                 return cocokKategori && cocokKeyword;
             });
 
-            // 1. RENDER HERO SECTION
-            if (kategoriAktif === 'Semua' && keywordPencarian === '' && daftarArtikel.length > 0) {
-                const artikelUtama = daftarArtikel[daftarArtikel.length - 1]; 
-                const indexUtama = daftarArtikel.length - 1;
-                let teksBersih = artikelUtama.isi.replace(/<\/?[^>]+(>|$)/g, "");
+          // 1. RENDER HERO SECTION
+    if (kategoriAktif === 'Semua' && keywordPencarian === '' && daftarArtikel.length > 0) {
+        const artikelUtama = daftarArtikel[daftarArtikel.length - 1]; 
+        let teksBersih = artikelUtama.isi.replace(/<\/?[^>]+(>|$)/g, "");
 
-                const linkArtikel = `${window.location.origin}/artikel.php?id=${indexUtama}`;
-                const shareWaUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(artikelUtama.judul)}%20-%20${encodeURIComponent(linkArtikel)}`;
+        const linkArtikel = `${window.location.origin}/artikel.php?id=${artikelUtama.id}`;
+        const shareWaUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(artikelUtama.judul)}%20-%20${encodeURIComponent(linkArtikel)}`;
 
-                heroSection.innerHTML = `
-                    <div class="mb-3 flex items-center justify-between">
-                        <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Utama Hari Ini</span>
-                        <span class="text-[10px] bg-accent/10 text-accent border border-accent/20 px-2.5 py-1 rounded-md font-bold uppercase">Trending</span>
-                    </div>
-                    <div class="bg-cardBg rounded-2xl border border-gray-800 overflow-hidden grid grid-cols-1 md:grid-cols-12 group hover:border-accent/50 transition">
-                        <div class="md:col-span-5 h-48 sm:h-60 md:h-full min-h-[180px] overflow-hidden relative cursor-pointer" onclick="window.location.href='artikel.php?id=${indexUtama}'">
-                            <img src="${artikelUtama.gambar || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80'}" alt="Hero Image" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90 group-hover:opacity-100">
-                            <span class="absolute top-3 left-3 bg-darkBg/80 backdrop-blur-md text-accent text-[10px] font-bold px-2.5 py-1 rounded-md uppercase border border-gray-800">${artikelUtama.kategori}</span>
+        heroSection.innerHTML = `
+            <div class="mb-3 flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Utama Hari Ini</span>
+                <span class="text-[10px] bg-accent/10 text-accent border border-accent/20 px-2.5 py-1 rounded-md font-bold uppercase">Trending</span>
+            </div>
+            <div class="bg-cardBg rounded-2xl border border-gray-800 overflow-hidden grid grid-cols-1 md:grid-cols-12 group hover:border-accent/50 transition">
+                <div class="md:col-span-5 h-48 sm:h-60 md:h-full min-h-[180px] overflow-hidden relative cursor-pointer" onclick="window.location.href='artikel.php?id=${artikelUtama.id}'">
+                    <img src="${artikelUtama.gambar || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80'}" alt="Hero Image" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90 group-hover:opacity-100">
+                    <span class="absolute top-3 left-3 bg-darkBg/80 backdrop-blur-md text-accent text-[10px] font-bold px-2.5 py-1 rounded-md uppercase border border-gray-800">${artikelUtama.kategori}</span>
+                </div>
+                <div class="md:col-span-7 p-5 sm:p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs text-gray-500 mb-2">
+                            <span>Oleh: ${artikelUtama.penulis || 'Admin'}</span>
+                            <span>•</span>
+                            <span>${artikelUtama.tanggal}</span>
                         </div>
-                        <div class="md:col-span-7 p-5 sm:p-6 flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center space-x-2 text-xs text-gray-500 mb-2">
-                                    <span>Oleh: ${artikelUtama.penulis || 'Admin'}</span>
-                                    <span>•</span>
-                                    <span>${artikelUtama.tanggal}</span>
-                                </div>
-                                <h1 onclick="window.location.href='artikel.php?id=${indexUtama}'" class="text-base sm:text-xl font-extrabold text-white mb-2 group-hover:text-accent transition leading-snug cursor-pointer">
-                                    ${artikelUtama.judul}
-                                </h1>
-                                <p onclick="window.location.href='artikel.php?id=${indexUtama}'" class="text-gray-400 text-xs sm:text-sm line-clamp-2 leading-relaxed cursor-pointer">
-                                    ${teksBersih}
-                                </p>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-gray-800 flex items-center justify-between text-xs">
-                                <a href="artikel.php?id=${indexUtama}" class="font-bold text-accent flex items-center space-x-1">
-                                    <span>Baca Selengkapnya</span>
-                                    <span class="group-hover:translate-x-1 transition">&rarr;</span>
-                                </a>
-                                <div class="flex items-center space-x-2">
-                                    <a href="${shareWaUrl}" target="_blank" title="Bagikan ke WhatsApp" class="p-2 bg-emerald-600/10 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-xl border border-emerald-500/20 transition flex items-center justify-center">
-                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-                                    </a>
-                                    <button onclick="salinLinkLuar('${linkArtikel}', this)" title="Salin Tautan" class="p-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-xl border border-gray-700 transition flex items-center justify-center cursor-pointer">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                                    </button>
-                                </div>
-                            </div>
+                        <h1 onclick="window.location.href='artikel.php?id=${artikelUtama.id}'" class="text-base sm:text-xl font-extrabold text-white mb-2 group-hover:text-accent transition leading-snug cursor-pointer">
+                            ${artikelUtama.judul}
+                        </h1>
+                        <p onclick="window.location.href='artikel.php?id=${artikelUtama.id}'" class="text-gray-400 text-xs sm:text-sm line-clamp-2 leading-relaxed cursor-pointer">
+                            ${teksBersih}
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-800 flex items-center justify-between text-xs">
+                        <a href="artikel.php?id=${artikelUtama.id}" class="font-bold text-accent flex items-center space-x-1">
+                            <span>Baca Selengkapnya</span>
+                            <span class="group-hover:translate-x-1 transition">&rarr;</span>
+                        </a>
+                        <div class="flex items-center space-x-2">
+                            <a href="${shareWaUrl}" target="_blank" title="Bagikan ke WhatsApp" class="p-2 bg-emerald-600/10 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-xl border border-emerald-500/20 transition flex items-center justify-center">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                            </a>
+                            <button onclick="salinLinkLuar('${linkArtikel}', this)" title="Salin Tautan" class="p-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-xl border border-gray-700 transition flex items-center justify-center cursor-pointer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                            </button>
                         </div>
                     </div>
-                `;
-            } else {
-                heroSection.innerHTML = ''; 
-            }
+                </div>
+            </div>
+        `;
+    } else {
+        heroSection.innerHTML = ''; 
+    }
 
             // 2. RENDER GRID ARTIKEL LAINNYA
             gridContainer.innerHTML = '';
@@ -216,53 +215,51 @@ fetch('ambil-data.php')
             }
 
             filteredArticles.slice().reverse().forEach((artikel) => {
-                const actualIndex = daftarArtikel.indexOf(artikel);
-                let teksBersihGrid = artikel.isi.replace(/<\/?[^>]+(>|$)/g, "");
+        let teksBersihGrid = artikel.isi.replace(/<\/?[^>]+(>|$)/g, "");
 
-                const linkArtikelGrid = `${window.location.origin}/artikel.php?id=${actualIndex}`;
-                const shareWaGridUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(artikel.judul)}%20-%20${encodeURIComponent(linkArtikelGrid)}`;
+        const linkArtikelGrid = `${window.location.origin}/artikel.php?id=${artikel.id}`;
+        const shareWaGridUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(artikel.judul)}%20-%20${encodeURIComponent(linkArtikelGrid)}`;
 
-                let cardHTML = `
-                    <div class="bg-cardBg rounded-2xl border border-gray-800 overflow-hidden flex flex-col justify-between group hover:border-accent/50 transition">
-                        <div>
-                            <div class="h-44 sm:h-48 overflow-hidden relative cursor-pointer" onclick="window.location.href='artikel.php?id=${actualIndex}'">
-                                <img src="${artikel.gambar || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80'}" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90 group-hover:opacity-100">
-                                <span class="absolute top-3 left-3 bg-darkBg/80 backdrop-blur-md text-accent text-[10px] font-bold px-2.5 py-1 rounded-md uppercase border border-gray-800">${artikel.kategori}</span>
-                            </div>
-                            <div class="p-4 sm:p-6">
-                                <h3 onclick="window.location.href='artikel.php?id=${actualIndex}'" class="text-base sm:text-lg font-bold text-white mb-2 group-hover:text-accent transition leading-snug line-clamp-2 cursor-pointer">
-                                    ${artikel.judul}
-                                </h3>
-                                <p onclick="window.location.href='artikel.php?id=${actualIndex}'" class="text-gray-400 text-xs sm:text-sm line-clamp-2 leading-relaxed cursor-pointer">
-                                    ${teksBersihGrid}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="px-4 sm:px-6 pb-4 sm:pb-6 pt-0 flex flex-col gap-3">
-                            <div class="flex items-center justify-between text-xs text-gray-500 border-t border-gray-800/80 pt-3">
-                                <span>Oleh: ${artikel.penulis || 'Admin'}</span>
-                                <span>${artikel.tanggal}</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <a href="artikel.php?id=${actualIndex}" class="text-accent font-bold text-xs flex items-center space-x-1 group-hover:translate-x-1 transition">
-                                    <span>Baca</span>
-                                    <span>&rarr;</span>
-                                </a>
-                                <div class="flex items-center space-x-2">
-                                    <a href="${shareWaGridUrl}" target="_blank" title="Bagikan ke WhatsApp" class="p-1.5 bg-emerald-600/10 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-lg border border-emerald-500/20 transition flex items-center justify-center">
-                                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-                                    </a>
-                                    <button onclick="salinLinkLuar('${linkArtikelGrid}', this)" title="Salin Tautan" class="p-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition flex items-center justify-center cursor-pointer">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                                    </button>
-                                </div>
-                            </div>
+        let cardHTML = `
+            <div class="bg-cardBg rounded-2xl border border-gray-800 overflow-hidden flex flex-col justify-between group hover:border-accent/50 transition">
+                <div>
+                    <div class="h-44 sm:h-48 overflow-hidden relative cursor-pointer" onclick="window.location.href='artikel.php?id=${artikel.id}'">
+                        <img src="${artikel.gambar || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80'}" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90 group-hover:opacity-100">
+                        <span class="absolute top-3 left-3 bg-darkBg/80 backdrop-blur-md text-accent text-[10px] font-bold px-2.5 py-1 rounded-md uppercase border border-gray-800">${artikel.kategori}</span>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <h3 onclick="window.location.href='artikel.php?id=${artikel.id}'" class="text-base sm:text-lg font-bold text-white mb-2 group-hover:text-accent transition leading-snug line-clamp-2 cursor-pointer">
+                            ${artikel.judul}
+                        </h3>
+                        <p onclick="window.location.href='artikel.php?id=${artikel.id}'" class="text-gray-400 text-xs sm:text-sm line-clamp-2 leading-relaxed cursor-pointer">
+                            ${teksBersihGrid}
+                        </p>
+                    </div>
+                </div>
+                <div class="px-4 sm:px-6 pb-4 sm:pb-6 pt-0 flex flex-col gap-3">
+                    <div class="flex items-center justify-between text-xs text-gray-500 border-t border-gray-800/80 pt-3">
+                        <span>Oleh: ${artikel.penulis || 'Admin'}</span>
+                        <span>${artikel.tanggal}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <a href="artikel.php?id=${artikel.id}" class="text-accent font-bold text-xs flex items-center space-x-1 group-hover:translate-x-1 transition">
+                            <span>Baca</span>
+                            <span>&rarr;</span>
+                        </a>
+                        <div class="flex items-center space-x-2">
+                            <a href="${shareWaGridUrl}" target="_blank" title="Bagikan ke WhatsApp" class="p-1.5 bg-emerald-600/10 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-lg border border-emerald-500/20 transition flex items-center justify-center">
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                            </a>
+                            <button onclick="salinLinkLuar('${linkArtikelGrid}', this)" title="Salin Tautan" class="p-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition flex items-center justify-center cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                            </button>
                         </div>
                     </div>
-                `;
-                gridContainer.insertAdjacentHTML('beforeend', cardHTML);
-            });
-        }
+                </div>
+            </div>
+        `;
+        gridContainer.insertAdjacentHTML('beforeend', cardHTML);
+    });
 
         function filterKategori(kategori) {
             kategoriAktif = kategori;
