@@ -1,9 +1,19 @@
+<?php
+include 'koneksi.php';
+
+// Ambil ID dari URL (contoh: artikel.php?id=5)
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+$query = "SELECT * FROM artikel WHERE id = $id";
+$result = mysqli_query($koneksi,$query);
+$artikel = mysqli_fetch_assoc($result);
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Artikel - Digiscope</title>
+    <title><?php echo $artikel ? htmlspecialchars($artikel['judul']) . " - Digiscope" : "Artikel Tidak Ditemukan - Digiscope"; ?></title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -11,8 +21,8 @@
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#080C14',     
-                        cardBg: '#111827',     
+                        darkBg: '#080C14',    
+                        cardBg: '#111827',    
                         accent: {
                             DEFAULT: '#FF5722', 
                             hover: '#FF7043'
@@ -25,7 +35,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style> 
         body { font-family: 'Plus Jakarta Sans', sans-serif; } 
-        /* Styling tambahan untuk konten artikel agar spasi paragraf rapi */
         .article-content p { margin-bottom: 1.5rem; line-height: 1.8; color: #9CA3AF; }
         .article-content h2 { font-size: 1.5rem; font-weight: 700; color: #FFFFFF; margin-top: 2rem; margin-bottom: 1rem; }
         .article-content h3 { font-size: 1.25rem; font-weight: 600; color: #FFFFFF; margin-top: 1.5rem; margin-bottom: 0.75rem; }
@@ -51,58 +60,42 @@
     <!-- KONTEN ARTIKEL UTAMA -->
     <main class="max-w-4xl mx-auto px-6 py-10">
         <article id="articleContainer">
-            <!-- Data artikel akan dimuat otomatis oleh JavaScript -->
-        </article>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="max-w-4xl mx-auto px-6 py-8 text-center text-gray-600 text-xs border-t border-gray-800 mt-20">
-        <p>&copy; 2026 Digiscope. Dark & Modern Publishing.</p>
-    </footer>
-
-    <!-- SCRIPT DETAIL ARTIKEL -->
-    <script>
-        const articleContainer = document.getElementById('articleContainer');
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const articleId = urlParams.get('id');
-
-        let daftarArtikel = JSON.parse(localStorage.getItem('artikelDigiscope')) || [];
-
-        if (articleId !== null && daftarArtikel[articleId]) {
-            const artikel = daftarArtikel[articleId];
-
-            document.title = `${artikel.judul} - Digiscope`;
-
-            // SOLUSI TEKS MENGGABUNG: Jika teks belum berformat <p>, ubah baris baru menjadi tag <p>
-            let formatIsi = artikel.isi;
-            if (!formatIsi.includes('<p>')) {
-                formatIsi = formatIsi.split('\n').map(paragraf => paragraf.trim() ? `<p>${paragraf}</p>` : '').join('');
-            }
-
-            articleContainer.innerHTML = `
+            <?php if ($artikel): ?>
                 <!-- Kategori & Tanggal -->
                 <div class="flex items-center space-x-3 mb-4">
-                    <span class="bg-accent/10 text-accent border border-accent/20 text-xs font-bold px-3 py-1 rounded-lg uppercase tracking-wider">${artikel.kategori}</span>
+                    <span class="bg-accent/10 text-accent border border-accent/20 text-xs font-bold px-3 py-1 rounded-lg uppercase tracking-wider"><?php echo htmlspecialchars($artikel['kategori']); ?></span>
                     <span class="text-xs text-gray-500">•</span>
-                    <span class="text-xs text-gray-400">${artikel.tanggal}</span>
+                    <span class="text-xs text-gray-400"><?php echo htmlspecialchars($artikel['tanggal']); ?></span>
                     <span class="text-xs text-gray-500">•</span>
-                    <span class="text-xs text-gray-400">Oleh: <strong class="text-white">${artikel.penulis || 'Admin'}</strong></span>
+                    <span class="text-xs text-gray-400">Oleh: <strong class="text-white"><?php echo htmlspecialchars($artikel['penulis'] ?? 'Admin'); ?></strong></span>
                 </div>
 
                 <!-- Judul Artikel -->
                 <h1 class="text-2xl md:text-4xl font-extrabold text-white mb-6 leading-tight">
-                    ${artikel.judul}
+                    <?php echo htmlspecialchars($artikel['judul']); ?>
                 </h1>
 
                 <!-- Gambar Utama -->
                 <div class="h-64 md:h-96 rounded-2xl overflow-hidden mb-8 border border-gray-800">
-                    <img src="${artikel.gambar || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80'}" alt="Gambar Artikel" class="w-full h-full object-cover">
+                    <img src="<?php echo !empty($artikel['gambar']) ?$artikel['gambar'] : 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80'; ?>" alt="Gambar Artikel" class="w-full h-full object-cover">
                 </div>
 
                 <!-- Isi Artikel -->
                 <div class="article-content text-sm md:text-base mb-12">
-                    ${formatIsi}
+                    <?php 
+                        // Memastikan baris baru pada teks biasa berubah menjadi paragraf HTML
+                        $isi =$artikel['isi'];
+                        if (strpos($isi, '<p>') === false) {
+                            $paragrafList = explode("\n", $isi);
+                            foreach ($paragrafList as$p) {
+                                if (trim($p) !== '') {
+                                    echo "<p>" . htmlspecialchars($p) . "</p>";
+                                }
+                            }
+                        } else {
+                            echo $isi; 
+                        }
+                    ?>
                 </div>
 
                 <!-- BAGIAN FITUR SHARE -->
@@ -123,24 +116,32 @@
                         </button>
                     </div>
                 </div>
-            `;
-
-            const currentUrl = window.location.href;
-            const encodedTitle = encodeURIComponent(artikel.judul);
-            const encodedUrl = encodeURIComponent(currentUrl);
-
-            document.getElementById('shareWa').href = `https://api.whatsapp.com/send?text=${encodedTitle}%20-%20${encodedUrl}`;
-            document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`;
-
-        } else {
-            articleContainer.innerHTML = `
+            <?php else: ?>
                 <div class="text-center py-20">
                     <h2 class="text-xl font-bold text-white mb-2">Artikel Tidak Ditemukan</h2>
                     <p class="text-gray-400 text-xs mb-6">Artikel yang Anda cari mungkin telah dihapus atau tautan tidak valid.</p>
                     <a href="index.html" class="bg-accent text-white font-bold text-xs px-5 py-2.5 rounded-xl">Kembali ke Beranda</a>
                 </div>
-            `;
-        }
+            <?php endif; ?>
+        </article>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="max-w-4xl mx-auto px-6 py-8 text-center text-gray-600 text-xs border-t border-gray-800 mt-20">
+        <p>&copy; 2026 Digiscope. Dark & Modern Publishing.</p>
+    </footer>
+
+    <!-- SCRIPT SHARE -->
+    <script>
+        const currentUrl = window.location.href;
+        const encodedTitle = encodeURIComponent(document.title);
+        const encodedUrl = encodeURIComponent(currentUrl);
+
+        const shareWa = document.getElementById('shareWa');
+        const shareTwitter = document.getElementById('shareTwitter');
+
+        if(shareWa) shareWa.href = `https://api.whatsapp.com/send?text=${encodedTitle}%20-%20${encodedUrl}`;
+        if(shareTwitter) shareTwitter.href = `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`;
 
         function salinTautan() {
             navigator.clipboard.writeText(window.location.href).then(() => {
