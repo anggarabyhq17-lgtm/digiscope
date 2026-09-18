@@ -155,7 +155,7 @@ fetch('ambil-data.php')
                 const indexUtama = daftarArtikel.length - 1;
                 let teksBersih = artikelUtama.isi.replace(/<\/?[^>]+(>|$)/g, "");
 
-                const linkArtikel = `${window.location.origin}/artikel.html?id=${indexUtama}`;
+                const linkArtikel = `${window.location.origin}/artikel.php?id=${indexUtama}`;
                 const shareWaUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(artikelUtama.judul)}%20-%20${encodeURIComponent(linkArtikel)}`;
 
                 heroSection.innerHTML = `
@@ -164,7 +164,7 @@ fetch('ambil-data.php')
                         <span class="text-[10px] bg-accent/10 text-accent border border-accent/20 px-2.5 py-1 rounded-md font-bold uppercase">Trending</span>
                     </div>
                     <div class="bg-cardBg rounded-2xl border border-gray-800 overflow-hidden grid grid-cols-1 md:grid-cols-12 group hover:border-accent/50 transition">
-                        <div class="md:col-span-5 h-48 sm:h-60 md:h-full min-h-[180px] overflow-hidden relative cursor-pointer" onclick="window.location.href='artikel.html?id=${indexUtama}'">
+                        <div class="md:col-span-5 h-48 sm:h-60 md:h-full min-h-[180px] overflow-hidden relative cursor-pointer" onclick="window.location.href='artikel.php?id=${indexUtama}'">
                             <img src="${artikelUtama.gambar || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80'}" alt="Hero Image" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90 group-hover:opacity-100">
                             <span class="absolute top-3 left-3 bg-darkBg/80 backdrop-blur-md text-accent text-[10px] font-bold px-2.5 py-1 rounded-md uppercase border border-gray-800">${artikelUtama.kategori}</span>
                         </div>
@@ -175,15 +175,15 @@ fetch('ambil-data.php')
                                     <span>•</span>
                                     <span>${artikelUtama.tanggal}</span>
                                 </div>
-                                <h1 onclick="window.location.href='artikel.html?id=${indexUtama}'" class="text-base sm:text-xl font-extrabold text-white mb-2 group-hover:text-accent transition leading-snug cursor-pointer">
+                                <h1 onclick="window.location.href='artikel.php?id=${indexUtama}'" class="text-base sm:text-xl font-extrabold text-white mb-2 group-hover:text-accent transition leading-snug cursor-pointer">
                                     ${artikelUtama.judul}
                                 </h1>
-                                <p onclick="window.location.href='artikel.html?id=${indexUtama}'" class="text-gray-400 text-xs sm:text-sm line-clamp-2 leading-relaxed cursor-pointer">
+                                <p onclick="window.location.href='artikel.php?id=${indexUtama}'" class="text-gray-400 text-xs sm:text-sm line-clamp-2 leading-relaxed cursor-pointer">
                                     ${teksBersih}
                                 </p>
                             </div>
                             <div class="mt-4 pt-3 border-t border-gray-800 flex items-center justify-between text-xs">
-                                <a href="artikel.html?id=${indexUtama}" class="font-bold text-accent flex items-center space-x-1">
+                                <a href="artikel.php?id=${indexUtama}" class="font-bold text-accent flex items-center space-x-1">
                                     <span>Baca Selengkapnya</span>
                                     <span class="group-hover:translate-x-1 transition">&rarr;</span>
                                 </a>
@@ -219,21 +219,21 @@ fetch('ambil-data.php')
                 const actualIndex = daftarArtikel.indexOf(artikel);
                 let teksBersihGrid = artikel.isi.replace(/<\/?[^>]+(>|$)/g, "");
 
-                const linkArtikelGrid = `${window.location.origin}/artikel.html?id=${actualIndex}`;
+                const linkArtikelGrid = `${window.location.origin}/artikel.php?id=${actualIndex}`;
                 const shareWaGridUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(artikel.judul)}%20-%20${encodeURIComponent(linkArtikelGrid)}`;
 
                 let cardHTML = `
                     <div class="bg-cardBg rounded-2xl border border-gray-800 overflow-hidden flex flex-col justify-between group hover:border-accent/50 transition">
                         <div>
-                            <div class="h-44 sm:h-48 overflow-hidden relative cursor-pointer" onclick="window.location.href='artikel.html?id=${actualIndex}'">
+                            <div class="h-44 sm:h-48 overflow-hidden relative cursor-pointer" onclick="window.location.href='artikel.php?id=${actualIndex}'">
                                 <img src="${artikel.gambar || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80'}" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90 group-hover:opacity-100">
                                 <span class="absolute top-3 left-3 bg-darkBg/80 backdrop-blur-md text-accent text-[10px] font-bold px-2.5 py-1 rounded-md uppercase border border-gray-800">${artikel.kategori}</span>
                             </div>
                             <div class="p-4 sm:p-6">
-                                <h3 onclick="window.location.href='artikel.html?id=${actualIndex}'" class="text-base sm:text-lg font-bold text-white mb-2 group-hover:text-accent transition leading-snug line-clamp-2 cursor-pointer">
+                                <h3 onclick="window.location.href='artikel.php?id=${actualIndex}'" class="text-base sm:text-lg font-bold text-white mb-2 group-hover:text-accent transition leading-snug line-clamp-2 cursor-pointer">
                                     ${artikel.judul}
                                 </h3>
-                                <p onclick="window.location.href='artikel.html?id=${actualIndex}'" class="text-gray-400 text-xs sm:text-sm line-clamp-2 leading-relaxed cursor-pointer">
+                                <p onclick="window.location.href='artikel.php?id=${actualIndex}'" class="text-gray-400 text-xs sm:text-sm line-clamp-2 leading-relaxed cursor-pointer">
                                     ${teksBersihGrid}
                                 </p>
                             </div>
@@ -244,7 +244,7 @@ fetch('ambil-data.php')
                                 <span>${artikel.tanggal}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <a href="artikel.html?id=${actualIndex}" class="text-accent font-bold text-xs flex items-center space-x-1 group-hover:translate-x-1 transition">
+                                <a href="artikel.php?id=${actualIndex}" class="text-accent font-bold text-xs flex items-center space-x-1 group-hover:translate-x-1 transition">
                                     <span>Baca</span>
                                     <span>&rarr;</span>
                                 </a>

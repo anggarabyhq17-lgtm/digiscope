@@ -40,7 +40,7 @@ function tampilkanArtikel() {
     filteredArticles.forEach((artikel) => {
         // Perhatikan penggunaan artikel.id untuk menggantikan index array
         let cardHTML = `
-            <div onclick="window.location.href='artikel.html?id=${artikel.id}'" class="bg-cardBg rounded-2xl border border-gray-800 overflow-hidden flex flex-col justify-between group cursor-pointer hover:border-accent/50 transition">
+            <div onclick="window.location.href='artikel.php?id=${artikel.id}'" class="bg-cardBg rounded-2xl border border-gray-800 overflow-hidden flex flex-col justify-between group cursor-pointer hover:border-accent/50 transition">
                 <div>
                     <div class="h-48 overflow-hidden relative">
                         <img src="${artikel.gambar || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80'}" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90 group-hover:opacity-100">
