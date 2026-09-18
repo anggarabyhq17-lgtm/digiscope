@@ -34,7 +34,7 @@
     <!-- NAVBAR UTAMA -->
     <header class="border-b border-gray-800 sticky top-0 bg-darkBg/95 backdrop-blur-md z-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-            <a href="index.html" class="text-xl font-extrabold tracking-tight text-white">Digi<span class="text-accent">scope</span>.</a>
+            <a href="index.php" class="text-xl font-extrabold tracking-tight text-white">Digi<span class="text-accent">scope</span>.</a>
             <div class="flex items-center space-x-3">
                 <a href="admin.html" class="bg-accent/10 hover:bg-accent text-accent hover:text-white border border-accent/20 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
                     <span>+</span> <span>Panel Admin</span>

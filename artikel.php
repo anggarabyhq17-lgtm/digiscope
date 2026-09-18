@@ -49,11 +49,11 @@ $artikel = mysqli_fetch_assoc($result);
     <!-- NAVBAR -->
     <header class="border-b border-gray-800 sticky top-0 bg-darkBg/95 backdrop-blur-md z-50">
         <div class="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-2 text-gray-400 hover:text-white transition text-xs font-bold">
+            <a href="index.php" class="flex items-center space-x-2 text-gray-400 hover:text-white transition text-xs font-bold">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 <span>Kembali ke Beranda</span>
             </a>
-            <a href="index.html" class="text-xl font-extrabold tracking-tight text-white">Digi<span class="text-accent">scope</span>.</a>
+            <a href="index.php" class="text-xl font-extrabold tracking-tight text-white">Digi<span class="text-accent">scope</span>.</a>
         </div>
     </header>
 
@@ -120,7 +120,7 @@ $artikel = mysqli_fetch_assoc($result);
                 <div class="text-center py-20">
                     <h2 class="text-xl font-bold text-white mb-2">Artikel Tidak Ditemukan</h2>
                     <p class="text-gray-400 text-xs mb-6">Artikel yang Anda cari mungkin telah dihapus atau tautan tidak valid.</p>
-                    <a href="index.html" class="bg-accent text-white font-bold text-xs px-5 py-2.5 rounded-xl">Kembali ke Beranda</a>
+                    <a href="index.php" class="bg-accent text-white font-bold text-xs px-5 py-2.5 rounded-xl">Kembali ke Beranda</a>
                 </div>
             <?php endif; ?>
         </article>
